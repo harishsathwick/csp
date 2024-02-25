@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <title>sensors</title>
+    <link rel="stylesheet" href="sensors.css">
+</head>
+<body>
+    <header class="header">
+        <a href="#" class="logo"></a>
+    </header>
+    <section class="sensors>
+        <div class="sensors-content">
+            <h2> <strong> Sensors </strong></h2> <br> <br>
+            <h3>IOT  USED  FOR  THIS  PROBLEM :</h3> <br>
+            <p> <pre>Using Underwater Load Cells is indeed a more suitable choice for accurate prawn weight
+                 measurement underwater.  Load cells are designed to precisely measure weight and force,
+                making them highly reliable for such applications. They can provide accurate readings in
+                aquatic environments, where factors like buoyancy and water resistance can affect measurements.
+                Load cells are purpose-built for weight measurement and are well-suited for aquaculture applications
+                where precision is essential.
+               <center>Waterproof Design:</center><br>
+                Underwater load cells are specifically engineered to be watertight and resistant to water
+                ingress. This ensures that the sensitive components remain protected and functional when submerged.
+              <center>High Accuracy:</center><br>
+               load cells are known for their high precision and accuracy in weight measurement, even in challenging
+                underwater conditions where buoyancy and water pressure can affect measurements.
+              <center> Data Output: </center><br>
+              Depending on the model, underwater load cells can provide analog or
+               digital data output, making them compatible with various data acquisition and monitoring systems, including IoT platforms.</pre></p> <br>
+
+               <h3>Code generated into the iot device(Load Cell) :</h3> <br>
+               <p> <pre>
+                import RPi.GPIO as GPIO
+                import time
+                from hx711 import HX711
+                
+                # Initialize the load cell
+                hx = HX711(dout_pin=5, pd_sck_pin=6)
+                
+                def read_load_cell_data():
+                    weight_data = hx.get_weight(5)  # Read the weight data from the load cell
+                    return weight_data
+                
+                def cal_true_weight(apparent_weight,density_of_fluid,volume_of_object):           
+                    gravitation_accelerate = 9.81  
+                    buoyant_force = density_of_fluid * volume_of_object *gravitation_accelerate
+                    true_weight = apparent_weight - buoyant_force
+                    return true_weight
+                # Constants for density of water and volume of the object (adjust as needed)
+                density_of_water = 1000  # kg/m³ (density of water)
+                volume_of_object = 0.001  # m³ (volume of the object, 1 liter = 0.001 m³)
+                total_weight = 0  # Initialize the total weight
+                prawn_weights = []  # List to store individual prawn weights
+                
+                while True:
+                    weight_data = read_load_cell_data()  # Read data from the load cell
+                    # Calculate true weight using Archimedes' principle
+                    true_weight = cal_true_weight(weight_data, density_of_water,volume_of_object)
+                
+                    # Add the true weight of the prawn to the list
+                    prawn_weights.append(true_weight)
+                
+                    # Calculate the cumulative weight of prawns
+                    total_weight = sum(prawn_weights)
+                
+                    # Check if the total weight reaches or exceeds 1000 grams (1 kg)
+                    if total_weight >= 1000:
+                        prawn_count = len(prawn_weights)  # Calculate the count of prawns
+                        # Display the prawn count for 1 kg
+                        print(f"Prawns for 1 kg: {prawn_count}")
+                        # Reset the prawn weights list
+                        prawn_weights = []
+                    # Wait for a specified interval before reading again
+                    time.sleep(10) </pre></p>
+        </div>
+    </section>
+</body>
+</html>
